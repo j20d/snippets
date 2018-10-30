@@ -1,0 +1,11 @@
+# list of files to be transfered
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+filelist: 
+  - name:     afile
+    src:      "file.txt"
+    dest:     "/whereever/file.txt"
+    owner:    "owner"
+    group:    "group"
+    mode:     "0644"
+

@@ -1,0 +1,37 @@
+# Set up sudo
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+
+- name:       install sudo
+  apt:
+    name:     sudo
+    state:    latest
+
+
+- name:       deploy sudoers
+  copy:
+    src:      "sudo/sudoers.{{ ansible_distribution_release }}"
+    dest:     "/etc/sudoers"
+    group:    root
+    owner:    root
+    mode:     0440
+
+- name:       deploy sudoers for ansible user
+  copy:
+    src:      "sudo/sudoers-ansible"
+    dest:     "/etc/sudoers.d/ansible"
+    mode:     0400
+
+- name:        no sudo pass for admins
+  copy:
+    src:      "sudo/sudoers-adm"
+    dest:     "/etc/sudoers.d/adm"
+    mode:     0400
+  when:       adminsudo
+
+- name:        admins need sudopass
+  file:
+    path:     "/etc/sudoers.d/adm"
+    state:    absent
+  when:       (not adminsudo or adminsudo is undefined)
+

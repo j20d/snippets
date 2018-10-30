@@ -1,0 +1,30 @@
+# Sync the Admin-Users out to the machines
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+- include_vars: adminusers.yaml
+- name: add default groups for local admins
+  group:
+    name:         "{{ item.name }}"
+  with_items:     "{{ adminusers }}"
+
+- name: add local admin users
+  user: 
+    name:         "{{ item.name }}"
+    comment:      "{{ item.comment }}"
+    group:        "{{ item.name }}"
+    groups:       "{{ item.groups }}"
+    append:       yes
+    shell:        "{{ item.shell }}"
+    password:     "{{ item.passhash }}"
+  
+  with_items:     "{{ adminusers }}"
+
+- name: sync ssh keys
+  authorized_key:
+    user:         "{{ item.name }}"
+    key:          "{{ item.key }}"
+    key_options:  "{{ item.key_opts }}"
+    exclusive:    "{{ item.key_excl }}"
+
+  with_items:     "{{ adminusers }}"
+

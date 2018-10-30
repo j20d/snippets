@@ -1,0 +1,32 @@
+# Set up ntp
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+
+- name:       install ntp
+  apt:
+    name:     ntp
+    state:    installed
+
+- name:       deploy ntp config
+  copy:
+    src:      "ntp/ntp.conf"
+    dest:     "/etc/ntp.conf"
+    group:    root
+    owner:    root
+    mode:     0644
+  notify:     restart_ntp
+
+- name:       set timezone to UTC
+  copy:
+    src:      "ntp/timezone"
+    dest:     "/etc/timezone"
+    group:    root
+    owner:    root
+    mode:     0644
+  notify:     restart_ntp
+  register:   timezoneset
+
+- name:       reconfigure timezone
+  command:    "/usr/sbin/dpkg-reconfigure -fnoninteractive tzdata"
+  when:       timezoneset|changed 
+

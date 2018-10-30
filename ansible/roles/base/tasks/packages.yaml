@@ -1,0 +1,8 @@
+# make sure all packages are installed
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+- include_vars: packages.yaml
+- apt: 
+    name:       "{{ item }}"
+    state:      installed
+  with_items: "{{ packagelist }}"

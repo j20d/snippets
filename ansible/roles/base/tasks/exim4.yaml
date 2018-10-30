@@ -1,0 +1,33 @@
+# Set up exim4
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+
+- name:       install exim4
+  apt:
+    name:     exim4-config
+    state:    installed
+
+- name:       deploy exim4-config
+  template:
+    src:      "exim4/update-exim4.conf.conf.default.j2"
+    dest:     "/etc/exim4/update-exim4.conf.conf"
+    group:    root
+    owner:    root
+    mode:     0644
+  notify:   restart_exim4
+  register: exim4confconf
+
+- name:       deploy mailname
+  template:
+    src:      "exim4/mailname.j2"
+    dest:     "/etc/mailname"
+    group:    root
+    owner:    root
+    mode:     0644
+  notify:   restart_exim4
+
+- name:       run update-exim4.conf
+  command:    "/usr/sbin/update-exim4.conf"
+  notify:     restart_exim4
+  when:       exim4confconf|changed 
+

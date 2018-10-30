@@ -1,0 +1,39 @@
+# Set up whatever is needed
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+- name: add default group for user
+  group:
+    name:         "whatever"
+
+- name: add local user 
+  user: 
+    name:         "whatever"
+    comment:      "whatever User"
+    group:        "whatever"
+    groups:       "users"
+    append:       yes
+    shell:        "/bin/bash"
+    password:     "!"
+
+
+
+- include_vars: dirs.yaml
+
+- file: 
+    name:       "{{ item }}"
+    state:      directory
+    owner:      ohs
+    group:      ohs
+  with_items: "{{ dirlist }}"
+
+
+- include_vars: files.yaml
+
+- copy:
+    src:          "{{ item.src }}"
+    dest:         "{{ item.dest }}"
+    owner:        "{{ item.owner }}"
+    group:        "{{ item.group }}"
+    mode:         "{{ item.mode }}"
+  with_items: "{{ filelist }}"
+

@@ -1,0 +1,12 @@
+# Watch out, ansible at work
+#
+
+Host *
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
+# this content comes from the ssh-personal-environment package
+SendEnv SSH_PERS_ENV_DATA SSH_PERS_ENV_FILES SSH_PERS_ENV_DEBUG
+# end of content from the ssh-personal-environment package
+

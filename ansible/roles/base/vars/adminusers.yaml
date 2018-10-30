@@ -1,0 +1,22 @@
+# Defines all the Admin Users for the common role.
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+adminusers: 
+  - name:         ansible
+    comment:      "ansible remote config user"
+    groups:       "sudo,users"
+    shell:        /bin/bash
+    passhash:     $6$ffdlsjflksflsjflksjf
+    key:          "{{ lookup ('file','adminusers/ssh-key-ansible.pub') }}"
+    key_opts:     'no-port-forwarding,from="10.128.0.*"'
+    key_excl:     yes
+  
+  - name:         adminuser 
+    comment:      "Admin User"
+    groups:       "sudo,users,adm"
+    shell:        /bin/bash
+    passhash:     $6$djfldsjfldjfsljfsdjfsljfsljflsj
+    key:          "{{ lookup ('file','adminusers/ssh-key-adminuser.pub') }}"
+    key_opts:     'from="*.*.*.*"'
+    key_excl:     yes
+  

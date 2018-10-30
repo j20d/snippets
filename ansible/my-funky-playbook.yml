@@ -1,0 +1,7 @@
+---
+- hosts: myhosts
+  become: true
+  remote_user: debian
+  gather_facts: false
+
+  roles: base

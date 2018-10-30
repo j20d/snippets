@@ -1,0 +1,37 @@
+# Set up openssh
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+
+- name:       install all packages
+  apt:
+    name:     "{{ item }}"
+    state:    installed
+  with_items:
+    - ssh-personal-environment
+    - openssh-server
+    - openssh-client
+
+- name:       install libpam-systemd
+  apt:
+    name:     libpam-systemd
+    state:    installed
+  when:       (ansible_distribution == "Debian" and ansible_distribution_major_version == "8")
+
+- name:       deploy sshd_config
+  copy:
+    src:      "ssh/sshd_config.{{ ansible_distribution_release }}"
+    dest:     "/etc/ssh/sshd_config"
+    group:    root
+    owner:    root
+    mode:     0644
+  notify:   restart_ssh
+
+
+- name:       deploy ssh_config
+  copy:
+    src:      "ssh/ssh_config.{{ ansible_distribution_release }}"
+    dest:     "/etc/ssh/ssh_config"
+    group:    root
+    owner:    root
+    mode:     0644
+  notify:   restart_ssh

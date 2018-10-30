@@ -1,0 +1,6 @@
+# Defines all Users that should not exist
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+removeusers: 
+  - pi
+  - stupiduser

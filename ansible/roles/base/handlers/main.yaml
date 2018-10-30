@@ -1,0 +1,27 @@
+# Handlers. 
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
+---
+  - name: restart_exim4
+    service:
+      name: exim4
+      state: restarted
+
+  - name: restart_snmpd
+    service:
+      name: snmpd
+      state: restarted
+
+  - name: restart_ssh
+    service:
+      name: ssh
+      state: restarted
+  
+  - name: restart_ntp
+    service:
+      name: ntp
+      state: restarted
+  
+  - name: restart_xinetd
+    service:
+      name: xinetd
+      state: restarted
