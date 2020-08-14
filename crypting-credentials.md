@@ -1,9 +1,9 @@
 ## crypting openstack credentials
-I don't like having my creds uncrypted.
-crypting them using pass and having them decrypted on the fly
-by utilizing a fifo makes sure they're not exported.
-Since pass is using gpg this works with gpg-agent-forwarding
-over SSH and will als for a passphrase on your local machine
+I don't like having my creds uncrypted.  
+crypting them using pass and having them decrypted on the fly  
+by utilizing a fifo makes sure they're not exported.  
+Since pass is using gpg this works with gpg-agent-forwarding  
+over SSH and will als for a passphrase on your local machine  
 
 This also works for ansible vault credentials.
 
@@ -21,7 +21,7 @@ mv ~/.config/openstack/secure.yaml ~/.config/openstack/secure.yaml.nocrypt
 mkfifo ~/.config/openstack/secure.yaml
 ```
 ### feeder-script
-The empty echo makes sure that we only request a key for decrypting when 
+The empty echo makes sure that we only request a key for decrypting when   
 we really need it, otherwise we'd have decrypted credentials waiting in the fifo.
 ```
 echo ""; pass show openstack-secure.yaml
