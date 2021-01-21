@@ -27,6 +27,7 @@ cat foobar | while read line; do echo $line; done
 strip config files
 ```
 cat $foo.conf | grep -v -E '^[[:space:]]*(#|$)'
+cat $foo.conf | grep -v -E '^[[:blank:]]*#|^[[:blank:]]*$' # maybe the same, needs checking
 ```
 
 ## bash-aliases and functions
@@ -39,4 +40,22 @@ alias fuck='sudo $(history -p \!\!)'
 I also keep forgetting that scp needs a colon in source or destination to work with remotes
 ```
 scp() { if [[ $@ == *":"* ]]; then /usr/bin/scp $@; else echo "Damnit Jim, SRC or DST has to be remote!"; fi; }
+```
+
+wrapping ansible-playbook to support proper logging
+```
+#!/bin/bash
+_log_path="path-to-your-logs/with-prefix-if-you-want"
+_log_user=${USER}
+if [ ! -z ${SUDO_USER}; then
+  _log_user=${SUDO_USER}
+fi
+for _arg in "$@"; do
+  if [[ "${_arg} =~ .+\.ya?ml ]]; then
+    _playbook = ${arg//./_}
+    ANSIBLE_LOG_PATH=${_log_path}{$(date +%Y%m%d_%H%M%S)-${_playbook}-${_log_user}.log
+    export ANSIBLE_LOG_PATH
+  fi
+done
+ansible-playbook $@
 ```
