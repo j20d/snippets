@@ -45,6 +45,7 @@ scp() { if [[ $@ == *":"* ]]; then /usr/bin/scp $@; else echo "Damnit Jim, SRC o
 wrapping ansible-playbook to support proper logging
 ```
 #!/bin/bash
+set -o pipefail
 _log_path="path-to-your-logs/with-prefix-if-you-want"
 _log_user=${USER}
 if [ ! -z ${SUDO_USER}; then
@@ -57,5 +58,17 @@ for _arg in "$@"; do
     export ANSIBLE_LOG_PATH
   fi
 done
+cat << EOF >> ${ANSIBLE_LOG_PATH}
+---
+started: $(date --iso-8601=seconds)
+Args: $@
+---
+EOF
+SECONDS=0
 ansible-playbook $@
+cat << EOF >> ${ANSIBLE_LOG_PATH}
+finished: $(date --iso-8601=seconds)
+runtime: $(($duration / 60)):$(($duration % 60))
+EOF
 ```
+
