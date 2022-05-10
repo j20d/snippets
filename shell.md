@@ -48,27 +48,29 @@ wrapping ansible-playbook to support proper logging
 set -o pipefail
 _log_path="path-to-your-logs/with-prefix-if-you-want"
 _log_user=${USER}
-if [ ! -z ${SUDO_USER}; then
+if [ ! -z ${SUDO_USER} ]; then
   _log_user=${SUDO_USER}
 fi
 for _arg in "$@"; do
-  if [[ "${_arg} =~ .+\.ya?ml ]]; then
-    _playbook = ${arg//./_}
-    ANSIBLE_LOG_PATH=${_log_path}{$(date +%Y%m%d_%H%M%S)-${_playbook}-${_log_user}.log
+  if [[ "${_arg}" =~ .+\.ya?ml ]]; then
+    _playbook=${_arg//./_}
+    ANSIBLE_LOG_PATH=${_log_path}$(date +%Y%m%d_%H%M%S)-${_playbook}-${_log_user}.log
     export ANSIBLE_LOG_PATH
   fi
 done
 cat << EOF >> ${ANSIBLE_LOG_PATH}
 ---
 started: $(date --iso-8601=seconds)
-Args: $@
+args: $@
+USER: ${USER}
+SUDO_USER: ${SUDO_USER}
 ---
 EOF
 SECONDS=0
 ansible-playbook $@
 cat << EOF >> ${ANSIBLE_LOG_PATH}
 finished: $(date --iso-8601=seconds)
-runtime: $(($duration / 60)):$(($duration % 60))
+runtime: $(printf "%02d" $((${SECONDS} / 60))):$(printf "%02d" $((${SECONDS} % 60)))
 EOF
 ```
 
